@@ -1,12 +1,12 @@
 from fastapi import APIRouter
-from src.schemas.history import HistoryRead, HistoryList
+from src.schemas.history import HistoryRead
 
 router = APIRouter(tags=["history"], prefix="/history")
 
 
 @router.get("/")
-async def get_history() -> HistoryList:
-    return HistoryList(items=[])
+async def get_history() -> list[HistoryRead]:
+    return []
 
 
 @router.get("/{history_id}")
