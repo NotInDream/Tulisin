@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  --tone-0: #ffffff;
+  --tone-50: #fafafa;
+  --tone-100: #f4f4f4;
+  --tone-200: #e6e6e6;
+  --tone-300: #d4d4d4;
+  --tone-400: #a3a3a3;
+  --tone-500: #737373;
+  --tone-600: #525252;
+  --tone-700: #363636;
+  --tone-800: #1f1f1f;
+  --tone-900: #121212;
+  --tone-1000: #000000;
+
+  --canvas: var(--tone-0);
+  --surface: var(--tone-50);
+  --surface-raised: var(--tone-100);
+  --surface-hover: var(--tone-100);
+  --border-subtle: var(--tone-200);
+  --border-strong: var(--tone-300);
+
+  --content-primary: var(--tone-900);
+  --content-secondary: var(--tone-600);
+  --content-muted: var(--tone-500);
+  --content-inverted: var(--tone-0);
+
+  --accent: var(--tone-1000);
+  --accent-hover: var(--tone-800);
+  --accent-content: var(--tone-0);
+
+  --danger: #dc2626;
+  --danger-surface: #fef2f2;
+
+  --ring: var(--tone-900);
+}
+
+[data-theme="dark"] {
+  --canvas: var(--tone-900);
+  --surface: var(--tone-800);
+  --surface-raised: var(--tone-700);
+  --surface-hover: var(--tone-700);
+  --border-subtle: var(--tone-700);
+  --border-strong: var(--tone-600);
+
+  --content-primary: var(--tone-50);
+  --content-secondary: var(--tone-400);
+  --content-muted: var(--tone-500);
+  --content-inverted: var(--tone-900);
+
+  --accent: var(--tone-0);
+  --accent-hover: var(--tone-200);
+  --accent-content: var(--tone-1000);
+
+  --danger: #f87171;
+  --danger-surface: #2a1717;
+
+  --ring: var(--tone-100);
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-hover: var(--surface-hover);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+
+  --color-content-primary: var(--content-primary);
+  --color-content-secondary: var(--content-secondary);
+  --color-content-muted: var(--content-muted);
+  --color-content-inverted: var(--content-inverted);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-content: var(--accent-content);
+
+  --color-danger: var(--danger);
+  --color-danger-surface: var(--danger-surface);
+
+  --color-ring: var(--ring);
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: var(--content-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+}

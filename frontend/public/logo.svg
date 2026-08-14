@@ -1,0 +1,44 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="paperShade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F0F0F0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background hitam -->
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="#111111"/>
+
+  <!-- Kertas -->
+  <g>
+    <rect x="150" y="118" width="220" height="280" rx="14" fill="url(#paperShade)"/>
+    <!-- lipatan sudut kertas -->
+    <path d="M 320 118 L 370 118 L 370 168 Z" fill="#D8D8D8"/>
+    <path d="M 320 118 L 370 168 L 320 168 Z" fill="#FFFFFF"/>
+
+    <!-- 3 garis teks hasil transkrip -->
+    <g stroke="#111111" stroke-linecap="round" stroke-width="10">
+      <line x1="180" y1="220" x2="300" y2="220"/>
+      <line x1="180" y1="250" x2="336" y2="250"/>
+      <line x1="180" y1="280" x2="280" y2="280"/>
+    </g>
+  </g>
+
+  <!-- Pena, di-flip vertikal & horizontal, ujung runcing mengarah ke kertas -->
+  <g transform="translate(35 0) rotate(45 300 300)">
+    <!-- badan + ujung pena jadi satu path menyatu, dengan outline agar kontras dari kertas -->
+    <path d="M 283,150
+             L 317,150
+             Q 320,150 320,153
+             L 320,368
+             L 300,424
+             L 280,368
+             L 280,153
+             Q 280,150 283,150
+             Z"
+      fill="#FFFFFF" stroke="#111111" stroke-width="7" stroke-linejoin="round"/>
+    <!-- garis genggaman pena -->
+    <rect x="280" y="322" width="40" height="13" fill="#111111"/>
+    <rect x="280" y="345" width="40" height="9" fill="#111111"/>
+  </g>
+</svg>
