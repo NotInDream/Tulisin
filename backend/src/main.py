@@ -4,12 +4,12 @@ from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from src.api.routes import health, history
 from src.core.config import get_settings
-from src.core.exceptions import DomainError
+from src.core.exceptions import DomainError, NotFoundError
 from src.db.base import Base
 from src.db.session import engine
 from src.models import History  # noqa: F401
-from src.api.routes import health, history
 
 
 @asynccontextmanager
@@ -27,7 +27,16 @@ def _register_exception_handlers(app: FastAPI) -> None:
             content={"detail": exc.message},
         )
 
+    async def handle_not_found_error(
+        request: Request, exc: NotFoundError
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={"detail": exc.message},
+        )
+
     app.add_exception_handler(DomainError, handle_domain_error)
+    app.add_exception_handler(NotFoundError, handle_not_found_error)
 
 
 def create_app() -> FastAPI:
