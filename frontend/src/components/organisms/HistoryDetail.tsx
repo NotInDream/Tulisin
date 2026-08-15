@@ -1,4 +1,4 @@
-import { FileAudio, Info } from "lucide-react";
+import { FileAudio } from "lucide-react";
 import { TranscriptPanel } from "../molecules/TranscriptPanel";
 import { historyAudioUrl } from "../../features/history/audio";
 import type { History } from "../../features/history/types";
