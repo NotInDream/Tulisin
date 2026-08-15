@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from src.api.deps import HistoryServiceDep, SessionDep
+from src.api.deps import AudioStorageDep, HistoryServiceDep, SessionDep
 from src.schemas.history import HistoryCreate, HistoryRead, HistoryUpdate
 
 router = APIRouter(tags=["history"], prefix="/history")
@@ -45,8 +45,11 @@ async def update_history_item(
 async def delete_history_item(
     history_id: int,
     service: HistoryServiceDep,
+    storage: AudioStorageDep,
     session: SessionDep,
 ) -> None:
-    await service.delete(history_id)
+    audio_file = await service.delete(history_id)
     await session.commit()
+    if audio_file:
+        await storage.delete(audio_file)
     return
