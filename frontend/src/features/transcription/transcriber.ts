@@ -1,9 +1,17 @@
-export function transcribeAudio(file: File): Promise<string> {
-  const sample = `Ini adalah hasil speech-to-text contoh untuk berkas "${file.name}".
+import { apiUpload } from "../../lib/api";
+import type { TranscriptionResult } from "./types";
 
-Sambungkan fungsi transcribeAudio di src/features/transcription/transcriber.ts ke API speech-to-text milikmu untuk mendapatkan transkrip sungguhan. Fungsi ini cukup mengembalikan Promise<string>, atau ubah menjadi streaming bila API-mu mendukung.`;
+interface TranscribeResponse {
+  name: string;
+  audio_file: string;
+  output: string;
+}
 
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(sample), 1800);
-  });
+export async function transcribeAudio(file: File): Promise<TranscriptionResult> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const data = await apiUpload<TranscribeResponse>("/transcribe/", formData);
+
+  return { text: data.output, audioFile: data.audio_file };
 }

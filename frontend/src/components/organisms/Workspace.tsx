@@ -5,13 +5,13 @@ import { TranscriptPanel } from "../molecules/TranscriptPanel";
 import type { Transcription } from "../../features/transcription/types";
 
 interface WorkspaceProps {
-  active: Transcription;
+  active: Transcription | null;
   onFile: (file: File) => void;
   onRemove: () => void;
 }
 
 export function Workspace({ active, onFile, onRemove }: WorkspaceProps) {
-  if (active.status === "empty" || !active.audio) {
+  if (!active || active.status === "empty" || !active.audio) {
     return (
       <div className="flex flex-1 items-center justify-center overflow-y-auto px-4 py-8">
         <div className="w-full max-w-xl">

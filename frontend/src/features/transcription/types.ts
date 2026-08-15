@@ -10,7 +10,13 @@ export interface Transcription {
   id: string;
   title: string;
   audio: AudioMeta | null;
+  audioFile: string | null;
   text: string;
   status: TranscriptionStatus;
   createdAt: number;
+}
+
+export interface TranscriptionResult {
+  text: string;
+  audioFile: string;
 }

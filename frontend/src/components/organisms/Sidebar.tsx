@@ -1,35 +1,38 @@
 import { Mic, PanelLeftClose, Heart } from "lucide-react";
 import { cn } from "../../lib/cn";
-import { Button } from "../atoms/Button";
 import { IconButton } from "../atoms/IconButton";
 import { Logo } from "../atoms/Logo";
 import { GithubMark } from "../atoms/GithubMark";
-import { TranscriptionItem } from "../molecules/TranscriptionItem";
+import { HistoryItem } from "../molecules/HistoryItem";
 import { SidebarLink } from "../molecules/SidebarLink";
-import type { Transcription } from "../../features/transcription/types";
+import type { History } from "../../features/history/types";
 
-const DONATE_URL = "https://saweria.co/";
-const GITHUB_URL = "https://github.com/";
+const DONATE_URL = "https://saweria.co/NotInDream";
+const GITHUB_URL = "https://github.com/NotInDream/Tulisin";
 
 interface SidebarProps {
-  items: Transcription[];
-  activeId: string;
+  history: History[];
+  historyLoading: boolean;
+  historyError: string | null;
+  selectedHistoryId: number | null;
   open: boolean;
-  onSelect: (id: string) => void;
+  onSelectHistory: (id: number) => void;
   onNewAudio: () => void;
-  onRename: (id: string, title: string) => void;
-  onDelete: (id: string) => void;
+  onRenameHistory: (item: History, name: string) => void;
+  onDeleteHistory: (id: number) => void;
   onClose: () => void;
 }
 
 export function Sidebar({
-  items,
-  activeId,
+  history,
+  historyLoading,
+  historyError,
+  selectedHistoryId,
   open,
-  onSelect,
+  onSelectHistory,
   onNewAudio,
-  onRename,
-  onDelete,
+  onRenameHistory,
+  onDeleteHistory,
   onClose,
 }: SidebarProps) {
   return (
@@ -50,24 +53,36 @@ export function Sidebar({
       </div>
 
       <div className="px-3 pb-2">
-        <Button variant="outline" onClick={onNewAudio} className="w-full justify-start">
-          <Mic size={16} />
+        <button
+          onClick={onNewAudio}
+          className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm text-content-secondary transition-colors hover:bg-surface-hover hover:text-content-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <Mic size={16} className="shrink-0" />
           Audio baru
-        </Button>
+        </button>
       </div>
 
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-2">
         <p className="px-3 pb-1 text-xs font-medium uppercase tracking-wide text-content-muted">
-          Riwayat
+          Tersimpan
         </p>
-        {items.map((item) => (
-          <TranscriptionItem
+        {historyLoading && (
+          <p className="px-3 py-2 text-sm text-content-muted">Memuat riwayat…</p>
+        )}
+        {historyError && (
+          <p className="px-3 py-2 text-sm text-danger">{historyError}</p>
+        )}
+        {!historyLoading && !historyError && history.length === 0 && (
+          <p className="px-3 py-2 text-sm text-content-muted">Belum ada riwayat.</p>
+        )}
+        {history.map((item) => (
+          <HistoryItem
             key={item.id}
             item={item}
-            active={item.id === activeId}
-            onSelect={onSelect}
-            onRename={onRename}
-            onDelete={onDelete}
+            active={item.id === selectedHistoryId}
+            onSelect={onSelectHistory}
+            onRename={onRenameHistory}
+            onDelete={onDeleteHistory}
           />
         ))}
       </nav>

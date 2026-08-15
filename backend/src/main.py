@@ -1,10 +1,12 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
-from src.api.routes import health, history
+from src.api.routes import health, history, transcribe
 from src.core.config import get_settings
 from src.core.exceptions import DomainError, NotFoundError
 from src.db.base import Base
@@ -14,6 +16,7 @@ from src.models import History  # noqa: F401
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    Path(get_settings().audio_dir).mkdir(parents=True, exist_ok=True)
     async with engine.begin() as connection:
         await connection.run_sync(Base.metadata.create_all)
     yield
@@ -55,6 +58,14 @@ def create_app() -> FastAPI:
 
     app.include_router(health.router, prefix=settings.api_prefix)
     app.include_router(history.router, prefix=settings.api_prefix)
+    app.include_router(transcribe.router, prefix=settings.api_prefix)
+
+    Path(settings.audio_dir).mkdir(parents=True, exist_ok=True)
+    app.mount(
+        settings.audio_url_prefix,
+        StaticFiles(directory=settings.audio_dir),
+        name="audio",
+    )
     return app
 
 

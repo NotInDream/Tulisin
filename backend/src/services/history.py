@@ -34,5 +34,10 @@ class HistoryService:
         history.output = data.output
         return await self._repository.update(history)
 
-    async def delete(self, history_id: int) -> None:
+    async def delete(self, history_id: int) -> str | None:
+        history = await self._repository.get(history_id)
+        if history is None:
+            return None
+        audio_file = history.audio_file
         await self._repository.delete(history_id)
+        return audio_file
