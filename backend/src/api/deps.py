@@ -44,7 +44,7 @@ def get_transcriber() -> Transcriber:
     settings = get_settings()
     return FasterWhisperTranscriber(
         model_name=settings.whisper_model,
-        device=settings.whisper_device,
+        device=settings.device,
         compute_type=settings.whisper_compute_type,
         language=settings.whisper_language,
     )

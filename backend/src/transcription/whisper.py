@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 import anyio
@@ -5,6 +6,9 @@ from faster_whisper import WhisperModel
 
 from src.core.exceptions import TranscriptionError
 from src.transcription.base import Transcriber
+from src.transcription.cuda import register_cuda_dll_directories
+
+logger = logging.getLogger(__name__)
 
 
 class FasterWhisperTranscriber(Transcriber):
@@ -35,6 +39,13 @@ class FasterWhisperTranscriber(Transcriber):
 
     def _load_model(self) -> WhisperModel:
         try:
+            register_cuda_dll_directories()
+            logger.info(
+                "Memuat model whisper '%s' (device=%s, compute_type=%s)",
+                self._model_name,
+                self._device,
+                self._compute_type,
+            )
             return WhisperModel(
                 self._model_name,
                 device=self._device,

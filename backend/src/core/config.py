@@ -19,10 +19,13 @@ class Settings(BaseSettings):
     audio_dir: str = "./data/audio"
     audio_url_prefix: str = "/audio"
 
+    device: str = "cpu"
+
     whisper_model: str = "base"
-    whisper_device: str = "cpu"
     whisper_compute_type: str = "int8"
     whisper_language: str | None = None
+
+    log_level: str = "INFO"
 
 
 @lru_cache
