@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from src.api.routes import health, history, transcribe
 from src.core.config import get_settings
 from src.core.exceptions import DomainError, NotFoundError
+from src.core.logging import configure_logging
 from src.db.base import Base
 from src.db.session import engine
 from src.models import History  # noqa: F401
@@ -44,6 +45,7 @@ def _register_exception_handlers(app: FastAPI) -> None:
 
 def create_app() -> FastAPI:
     settings = get_settings()
+    configure_logging(settings.log_level)
     app = FastAPI(title=settings.app_name, lifespan=lifespan)
 
     app.add_middleware(
