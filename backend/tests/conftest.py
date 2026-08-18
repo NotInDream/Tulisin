@@ -10,7 +10,7 @@ from src.db.base import Base
 from src.db.session import get_session
 from src.main import create_app
 from src.storage.base import AudioStorage
-from src.transcription.base import Transcriber
+from src.transcription.base import Transcriber, TranscriptSegment
 
 
 class FakeAudioStorage(AudioStorage):
@@ -30,8 +30,14 @@ class FakeAudioStorage(AudioStorage):
 
 
 class FakeTranscriber(Transcriber):
-    async def transcribe(self, audio_path: Path, language: str | None = None) -> str:
-        return f"transkrip untuk {audio_path.name}"
+    async def transcribe(
+        self, audio_path: Path, language: str | None = None
+    ) -> list[TranscriptSegment]:
+        return [
+            TranscriptSegment(
+                start=0.0, end=1.0, text=f"transkrip untuk {audio_path.name}"
+            )
+        ]
 
 
 @pytest_asyncio.fixture

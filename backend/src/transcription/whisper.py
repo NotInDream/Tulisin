@@ -5,7 +5,7 @@ import anyio
 from faster_whisper import WhisperModel
 
 from src.core.exceptions import TranscriptionError
-from src.transcription.base import Transcriber
+from src.transcription.base import Transcriber, TranscriptSegment
 from src.transcription.cuda import register_cuda_dll_directories
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,9 @@ class FasterWhisperTranscriber(Transcriber):
         self._model: WhisperModel | None = None
         self._lock = anyio.Lock()
 
-    async def transcribe(self, audio_path: Path, language: str | None = None) -> str:
+    async def transcribe(
+        self, audio_path: Path, language: str | None = None
+    ) -> list[TranscriptSegment]:
         model = await self._get_model()
         return await anyio.to_thread.run_sync(self._run, model, audio_path, language)
 
@@ -56,9 +58,16 @@ class FasterWhisperTranscriber(Transcriber):
 
     def _run(
         self, model: WhisperModel, audio_path: Path, language: str | None
-    ) -> str:
+    ) -> list[TranscriptSegment]:
         try:
             segments, _ = model.transcribe(str(audio_path), language=language or None)
-            return "".join(segment.text for segment in segments).strip()
+            return [
+                TranscriptSegment(
+                    start=segment.start,
+                    end=segment.end,
+                    text=segment.text.strip(),
+                )
+                for segment in segments
+            ]
         except Exception as error:
             raise TranscriptionError(f"Transkripsi gagal: {error}") from error

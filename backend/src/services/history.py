@@ -13,6 +13,7 @@ class HistoryService:
             name=data.name,
             audio_file=data.audio_file,
             output=data.output,
+            segments=self._dump_segments(data),
         )
         return await self._repository.add(history)
 
@@ -32,6 +33,7 @@ class HistoryService:
         history.name = data.name
         history.audio_file = data.audio_file
         history.output = data.output
+        history.segments = self._dump_segments(data)
         return await self._repository.update(history)
 
     async def delete(self, history_id: int) -> str | None:
@@ -41,3 +43,11 @@ class HistoryService:
         audio_file = history.audio_file
         await self._repository.delete(history_id)
         return audio_file
+
+    @staticmethod
+    def _dump_segments(
+        data: HistoryCreate | HistoryUpdate,
+    ) -> list[dict[str, float | str]] | None:
+        if data.segments is None:
+            return None
+        return [segment.model_dump() for segment in data.segments]
