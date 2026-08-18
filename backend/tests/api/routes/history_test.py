@@ -29,6 +29,31 @@ async def test_create_then_list_and_get(client):
     assert fetched.json()["output"] == "hasil transkrip"
 
 
+async def test_create_persists_segments(client):
+    payload = {
+        "name": "Rapat",
+        "audio_file": "rapat.mp3",
+        "output": "halo dunia",
+        "segments": [
+            {"start": 0.0, "end": 1.2, "text": "halo"},
+            {"start": 1.2, "end": 2.5, "text": "dunia"},
+        ],
+    }
+    created = await client.post("/api/v1/history/", json=payload)
+    assert created.status_code == 201
+
+    fetched = await client.get(f"/api/v1/history/{created.json()['id']}")
+    assert fetched.json()["segments"] == payload["segments"]
+
+
+async def test_create_without_segments_defaults_null(client):
+    created = await client.post(
+        "/api/v1/history/",
+        json={"name": "x", "audio_file": "x.mp3", "output": "x"},
+    )
+    assert created.json()["segments"] is None
+
+
 async def test_get_missing_history_returns_404(client):
     response = await client.get("/api/v1/history/999")
 

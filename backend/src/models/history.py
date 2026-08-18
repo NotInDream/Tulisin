@@ -1,6 +1,6 @@
 from datetime import UTC, datetime
 
-from sqlalchemy import DateTime, Integer, String, Text
+from sqlalchemy import JSON, DateTime, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.db.base import Base
@@ -17,6 +17,9 @@ class History(Base):
     name: Mapped[str] = mapped_column(String(255))
     audio_file: Mapped[str] = mapped_column(Text)
     output: Mapped[str] = mapped_column(Text)
+    segments: Mapped[list[dict[str, float | str]] | None] = mapped_column(
+        JSON, nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_now, onupdate=_now

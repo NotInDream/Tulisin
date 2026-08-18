@@ -1,5 +1,5 @@
 from src.core.exceptions import TranscriptionError
-from src.schemas.transcription import TranscriptionRead
+from src.schemas.transcription import TranscriptionRead, TranscriptionSegment
 from src.storage.base import AudioStorage
 from src.transcription.base import Transcriber
 
@@ -17,10 +17,18 @@ class TranscriptionService:
 
         stored_name = await self._storage.save(data, original_name)
         audio_path = self._storage.resolve(stored_name)
-        output = await self._transcriber.transcribe(audio_path, language)
+        segments = await self._transcriber.transcribe(audio_path, language)
 
         return TranscriptionRead(
             name=original_name,
             audio_file=stored_name,
-            output=output,
+            output=" ".join(segment.text for segment in segments).strip(),
+            segments=[
+                TranscriptionSegment(
+                    start=segment.start,
+                    end=segment.end,
+                    text=segment.text,
+                )
+                for segment in segments
+            ],
         )

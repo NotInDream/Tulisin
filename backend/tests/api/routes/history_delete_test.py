@@ -10,12 +10,14 @@ from src.db.base import Base
 from src.db.session import get_session
 from src.main import create_app
 from src.storage.local import LocalAudioStorage
-from src.transcription.base import Transcriber
+from src.transcription.base import Transcriber, TranscriptSegment
 
 
 class StubTranscriber(Transcriber):
-    async def transcribe(self, audio_path: Path, language: str | None = None) -> str:
-        return "teks"
+    async def transcribe(
+        self, audio_path: Path, language: str | None = None
+    ) -> list[TranscriptSegment]:
+        return [TranscriptSegment(start=0.0, end=1.0, text="teks")]
 
 
 @pytest_asyncio.fixture
