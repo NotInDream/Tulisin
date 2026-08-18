@@ -1,15 +1,41 @@
 import { useState } from "react";
 import { Check, Copy, Loader2, Pencil } from "lucide-react";
 import { Button } from "../atoms/Button";
-import type { TranscriptionStatus } from "../../features/transcription/types";
+import { cn } from "../../lib/cn";
+import type {
+  TranscriptSegment,
+  TranscriptionStatus,
+} from "../../features/transcription/types";
 
 interface TranscriptPanelProps {
   status: TranscriptionStatus;
   text: string;
+  segments?: TranscriptSegment[] | null;
+  currentTime?: number;
+  onSeek?: (time: number) => void;
   onSave?: (text: string) => void;
 }
 
-export function TranscriptPanel({ status, text, onSave }: TranscriptPanelProps) {
+function activeSegmentIndex(
+  segments: TranscriptSegment[],
+  time: number,
+): number {
+  let index = -1;
+  for (let i = 0; i < segments.length; i++) {
+    if (time >= segments[i].start) index = i;
+    else break;
+  }
+  return index;
+}
+
+export function TranscriptPanel({
+  status,
+  text,
+  segments,
+  currentTime = 0,
+  onSeek,
+  onSave,
+}: TranscriptPanelProps) {
   const [copied, setCopied] = useState(false);
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(text);
@@ -68,7 +94,28 @@ export function TranscriptPanel({ status, text, onSave }: TranscriptPanelProps) 
           </div>
         )}
 
-        {status === "done" && !editing && (
+        {status === "done" && !editing && segments && segments.length > 0 && (
+          <ol className="flex flex-col gap-0.5">
+            {segments.map((segment, index) => (
+              <li key={index}>
+                <button
+                  type="button"
+                  onClick={() => onSeek?.(segment.start)}
+                  className={cn(
+                    "w-full rounded-md px-2 py-1 text-left leading-7 transition-colors",
+                    index === activeSegmentIndex(segments, currentTime)
+                      ? "font-medium text-content-primary"
+                      : "text-content-muted hover:text-content-secondary",
+                  )}
+                >
+                  {segment.text.trim()}
+                </button>
+              </li>
+            ))}
+          </ol>
+        )}
+
+        {status === "done" && !editing && !(segments && segments.length > 0) && (
           <p className="whitespace-pre-wrap break-words leading-7 text-content-primary">
             {text}
           </p>

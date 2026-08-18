@@ -16,7 +16,14 @@ export interface Transcription {
   createdAt: number;
 }
 
+export interface TranscriptSegment {
+  start: number;
+  end: number;
+  text: string;
+}
+
 export interface TranscriptionResult {
   text: string;
   audioFile: string;
+  segments: TranscriptSegment[];
 }

@@ -1,11 +1,12 @@
 import { apiUpload } from "../../lib/api";
 import type { LanguageCode } from "./languages";
-import type { TranscriptionResult } from "./types";
+import type { TranscriptSegment, TranscriptionResult } from "./types";
 
 interface TranscribeResponse {
   name: string;
   audio_file: string;
   output: string;
+  segments: TranscriptSegment[];
 }
 
 export async function transcribeAudio(
@@ -18,5 +19,9 @@ export async function transcribeAudio(
 
   const data = await apiUpload<TranscribeResponse>("/transcribe/", formData);
 
-  return { text: data.output, audioFile: data.audio_file };
+  return {
+    text: data.output,
+    audioFile: data.audio_file,
+    segments: data.segments,
+  };
 }

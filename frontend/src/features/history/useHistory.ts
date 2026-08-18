@@ -36,6 +36,7 @@ export function useHistory() {
       name: next,
       audio_file: item.audio_file,
       output: item.output,
+      segments: item.segments,
     });
     setItems((prev) => prev.map((it) => (it.id === item.id ? updated : it)));
     return updated;
@@ -46,6 +47,7 @@ export function useHistory() {
       name: item.name,
       audio_file: item.audio_file,
       output,
+      segments: item.segments,
     });
     setItems((prev) => prev.map((it) => (it.id === item.id ? updated : it)));
     return updated;

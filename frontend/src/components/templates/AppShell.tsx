@@ -37,6 +37,7 @@ export function AppShell() {
         name: file.name,
         audio_file: result.audioFile,
         output: result.text,
+        segments: result.segments,
       });
       clear();
       setSelectedHistoryId(created.id);
