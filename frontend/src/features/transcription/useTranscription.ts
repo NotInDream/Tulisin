@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import type { LanguageCode } from "./languages";
 import type { Transcription, TranscriptionResult } from "./types";
 import { transcribeAudio } from "./transcriber";
 
@@ -17,7 +18,10 @@ export function useTranscription() {
   }, []);
 
   const transcribe = useCallback(
-    async (file: File): Promise<TranscriptionResult | null> => {
+    async (
+      file: File,
+      language: LanguageCode,
+    ): Promise<TranscriptionResult | null> => {
       const id = uid();
       setActive((prev) => {
         if (prev?.audio) URL.revokeObjectURL(prev.audio.url);
@@ -37,7 +41,7 @@ export function useTranscription() {
       });
 
       try {
-        return await transcribeAudio(file);
+        return await transcribeAudio(file, language);
       } catch {
         setActive((prev) =>
           prev && prev.id === id ? { ...prev, status: "error" } : prev,
