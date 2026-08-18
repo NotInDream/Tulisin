@@ -46,7 +46,6 @@ def get_transcriber() -> Transcriber:
         model_name=settings.whisper_model,
         device=settings.device,
         compute_type=settings.whisper_compute_type,
-        language=settings.whisper_language,
     )
 
 

@@ -1,16 +1,24 @@
+import { useState } from "react";
 import { Logo } from "../atoms/Logo";
 import { Dropzone } from "../molecules/Dropzone";
+import { LanguageSelect } from "../molecules/LanguageSelect";
 import { AudioPreview } from "../molecules/AudioPreview";
 import { TranscriptPanel } from "../molecules/TranscriptPanel";
 import type { Transcription } from "../../features/transcription/types";
+import {
+  DEFAULT_LANGUAGE,
+  type LanguageCode,
+} from "../../features/transcription/languages";
 
 interface WorkspaceProps {
   active: Transcription | null;
-  onFile: (file: File) => void;
+  onFile: (file: File, language: LanguageCode) => void;
   onRemove: () => void;
 }
 
 export function Workspace({ active, onFile, onRemove }: WorkspaceProps) {
+  const [language, setLanguage] = useState<LanguageCode>(DEFAULT_LANGUAGE);
+
   if (!active || active.status === "empty" || !active.audio) {
     return (
       <div className="flex flex-1 items-center justify-center overflow-y-auto px-4 py-8">
@@ -24,8 +32,12 @@ export function Workspace({ active, onFile, onRemove }: WorkspaceProps) {
               Upload audio, biar Tulisin yang menuliskannya untukmu.
             </p>
           </div>
-          <div className="mt-10">
-            <Dropzone onFile={onFile} />
+          <div className="mt-10 flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-sm text-content-muted">Bahasa audio</span>
+              <LanguageSelect value={language} onChange={setLanguage} />
+            </div>
+            <Dropzone onFile={(file) => onFile(file, language)} />
           </div>
         </div>
       </div>

@@ -23,7 +23,6 @@ class Settings(BaseSettings):
 
     whisper_model: str = "base"
     whisper_compute_type: str = "int8"
-    whisper_language: str | None = None
 
     log_level: str = "INFO"
 

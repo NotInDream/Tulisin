@@ -9,13 +9,15 @@ class TranscriptionService:
         self._storage = storage
         self._transcriber = transcriber
 
-    async def transcribe(self, original_name: str, data: bytes) -> TranscriptionRead:
+    async def transcribe(
+        self, original_name: str, data: bytes, language: str | None = None
+    ) -> TranscriptionRead:
         if not data:
             raise TranscriptionError("Berkas audio kosong.")
 
         stored_name = await self._storage.save(data, original_name)
         audio_path = self._storage.resolve(stored_name)
-        output = await self._transcriber.transcribe(audio_path)
+        output = await self._transcriber.transcribe(audio_path, language)
 
         return TranscriptionRead(
             name=original_name,

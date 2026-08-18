@@ -6,6 +6,7 @@ import { HistoryDetail } from "../organisms/HistoryDetail";
 import { useTranscription } from "../../features/transcription/useTranscription";
 import { useHistory } from "../../features/history/useHistory";
 import { useTheme } from "../../theme/useTheme";
+import type { LanguageCode } from "../../features/transcription/languages";
 
 export function AppShell() {
   const { theme, toggleTheme } = useTheme();
@@ -28,9 +29,9 @@ export function AppShell() {
   );
 
   const handleFile = useCallback(
-    async (file: File) => {
+    async (file: File, language: LanguageCode) => {
       setSelectedHistoryId(null);
-      const result = await transcribe(file);
+      const result = await transcribe(file, language);
       if (result === null) return;
       const created = await addHistory({
         name: file.name,
