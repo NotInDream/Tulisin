@@ -30,7 +30,7 @@ class FakeAudioStorage(AudioStorage):
 
 
 class FakeTranscriber(Transcriber):
-    async def transcribe(self, audio_path: Path) -> str:
+    async def transcribe(self, audio_path: Path, language: str | None = None) -> str:
         return f"transkrip untuk {audio_path.name}"
 
 

@@ -14,7 +14,7 @@ from src.transcription.base import Transcriber
 
 
 class StubTranscriber(Transcriber):
-    async def transcribe(self, audio_path: Path) -> str:
+    async def transcribe(self, audio_path: Path, language: str | None = None) -> str:
         return "teks"
 
 

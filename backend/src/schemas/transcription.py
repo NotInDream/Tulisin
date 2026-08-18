@@ -1,4 +1,29 @@
+from enum import StrEnum
+
 from pydantic import BaseModel
+
+
+class Language(StrEnum):
+    auto = "auto"
+    id = "id"
+    en = "en"
+    jw = "jw"
+    su = "su"
+    ms = "ms"
+    ar = "ar"
+    zh = "zh"
+    ja = "ja"
+    ko = "ko"
+    hi = "hi"
+    es = "es"
+    fr = "fr"
+    de = "de"
+    ru = "ru"
+    pt = "pt"
+
+    @property
+    def code(self) -> str | None:
+        return None if self is Language.auto else self.value
 
 
 class TranscriptionRead(BaseModel):
