@@ -3,14 +3,15 @@ import { TranscriptPanel } from "../molecules/TranscriptPanel";
 import { historyAudioUrl } from "../../features/history/audio";
 import { useAudioSync } from "../../features/transcription/useAudioSync";
 import type { History } from "../../features/history/types";
+import type { TranscriptSegment } from "../../features/transcription/types";
 
 interface HistoryDetailProps {
   item: History;
-  onSave: (text: string) => void;
+  onSave: (text: string, segments: TranscriptSegment[] | null) => void;
 }
 
 export function HistoryDetail({ item, onSave }: HistoryDetailProps) {
-  const { audioRef, currentTime, onTimeUpdate, seek } = useAudioSync();
+  const { audioRef, currentTime, onTimeUpdate, seek, playRange } = useAudioSync();
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -44,6 +45,7 @@ export function HistoryDetail({ item, onSave }: HistoryDetailProps) {
           segments={item.segments}
           currentTime={currentTime}
           onSeek={seek}
+          onPreview={playRange}
           onSave={onSave}
         />
         <div className="flex items-center gap-2 rounded-lg justify-center text-content-muted">

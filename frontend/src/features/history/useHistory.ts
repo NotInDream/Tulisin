@@ -42,16 +42,19 @@ export function useHistory() {
     return updated;
   }, []);
 
-  const editOutput = useCallback(async (item: History, output: string) => {
-    const updated = await updateHistory(item.id, {
-      name: item.name,
-      audio_file: item.audio_file,
-      output,
-      segments: item.segments,
-    });
-    setItems((prev) => prev.map((it) => (it.id === item.id ? updated : it)));
-    return updated;
-  }, []);
+  const editOutput = useCallback(
+    async (item: History, output: string, segments: History["segments"]) => {
+      const updated = await updateHistory(item.id, {
+        name: item.name,
+        audio_file: item.audio_file,
+        output,
+        segments,
+      });
+      setItems((prev) => prev.map((it) => (it.id === item.id ? updated : it)));
+      return updated;
+    },
+    [],
+  );
 
   const remove = useCallback(async (id: number) => {
     await deleteHistory(id);

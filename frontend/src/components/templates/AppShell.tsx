@@ -84,7 +84,9 @@ export function AppShell() {
           <HistoryDetail
             key={selectedHistory.id}
             item={selectedHistory}
-            onSave={(text) => editHistoryOutput(selectedHistory, text)}
+            onSave={(text, segments) =>
+              editHistoryOutput(selectedHistory, text, segments)
+            }
           />
         ) : (
           <Workspace active={active} onFile={handleFile} onRemove={handleNewAudio} />
