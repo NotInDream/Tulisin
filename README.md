@@ -1,4 +1,8 @@
-# Tulisin
+<p align="center">
+  <img src="frontend/public/logo.svg" alt="Tulisin logo" width="120" height="120" />
+</p>
+
+<h1 align="center">Tulisin</h1>
 
 Self-hosted **speech-to-text**: upload an audio file, get the transcript back. Everything runs on your own machine — open source, no account, no cloud service. Your data lives in a single portable SQLite file (a "savegame") plus the audio files on disk.
 
@@ -45,6 +49,27 @@ uvicorn src.main:app --reload
 The API runs at `http://127.0.0.1:8000` — interactive docs at `http://127.0.0.1:8000/docs`.
 The Whisper model is downloaded automatically the first time you transcribe.
 
+#### Using an NVIDIA GPU (CUDA)
+
+`requirements.txt` installs the **CPU** stack only. To run on CUDA you also need the
+CUDA 12 runtime libraries (`cuBLAS 12` + cuDNN) — the simplest way to get them is to
+install a **PyTorch CUDA 12** build, which ships those libraries as dependencies:
+
+```bash
+pip install torch --index-url https://download.pytorch.org/whl/cu121
+```
+
+Then point Tulisin at the GPU in `backend/.env`:
+
+```
+TULISIN_DEVICE=cuda
+TULISIN_WHISPER_COMPUTE_TYPE=float16
+```
+
+Without the CUDA libraries on your path, faster-whisper / whisper-ctranslate2 fails at
+startup looking for `cublas64_12.dll` (Windows) or `libcublas.so.12` (Linux) — see
+[Troubleshooting](#troubleshooting).
+
 ### 2. Frontend
 
 ```bash
@@ -66,12 +91,12 @@ The app runs at `http://localhost:5173` and talks to the backend at `VITE_API_BA
 | `TULISIN_AUDIO_DIR`            | `./data/audio`                          | Where uploaded audio files are stored.                                                                                   |
 | `TULISIN_AUDIO_URL_PREFIX`     | `/audio`                                | Static mount path used for playback.                                                                                     |
 | `TULISIN_WHISPER_MODEL`        | `base`                                  | `tiny` \| `base` \| `small` \| `medium` \| `large-v3` \| `large-v3-turbo` (add `.en` for English-only, e.g. `small.en`). |
-| `TULISIN_WHISPER_DEVICE`       | `cpu`                                   | `cpu` \| `cuda` \| `auto`.                                                                                               |
+| `TULISIN_DEVICE`               | `cpu`                                   | `cpu` \| `cuda` \| `auto`.                                                                                               |
 | `TULISIN_WHISPER_COMPUTE_TYPE` | `int8`                                  | CPU: `int8` \| `int16` \| `float32`. CUDA: `float16` \| `int8_float16` \| `bfloat16` \| `float32`.                       |
 | `TULISIN_WHISPER_LANGUAGE`     | _(empty)_                               | ISO-639-1 code (`id`, `en`, …). Empty = auto-detect.                                                                     |
 | `TULISIN_CORS_ORIGINS`         | `["http://localhost:5173"]`             | Allowed frontend origins.                                                                                                |
 
-Larger models are more accurate but slower and need more RAM/VRAM. For GPU, `cuda` + `float16` is a good starting point.
+Larger models are more accurate but slower and need more RAM/VRAM. For GPU, `cuda` + `float16` is a good starting point — but first install the CUDA 12 libraries (see [Using an NVIDIA GPU (CUDA)](#using-an-nvidia-gpu-cuda)).
 
 ### Frontend (`frontend/.env`)
 
@@ -148,6 +173,22 @@ Fix it with any of:
 - **Upgrade pip first** (`python -m pip install -U pip`) so it can pick up a matching
   prebuilt wheel, then reinstall.
 - **Use a Python version with prebuilt wheels** (3.11 or 3.12 are the safest).
+
+### CUDA error: cannot find `cublas64_12.dll` / `libcublas.so.12`
+
+Tulisin ships the **CPU** dependencies only, so `TULISIN_DEVICE=cuda` fails at
+startup when the CUDA 12 runtime libraries (cuBLAS 12 + cuDNN) aren't installed —
+whisper-ctranslate2 / CTranslate2 looks for `cublas64_12.dll` on Windows or
+`libcublas.so.12` on Linux.
+
+Install a **PyTorch CUDA 12** build, which bundles those libraries:
+
+```bash
+pip install torch --index-url https://download.pytorch.org/whl/cu121
+```
+
+Make sure your NVIDIA driver supports CUDA 12, then restart the backend. See
+[Using an NVIDIA GPU (CUDA)](#using-an-nvidia-gpu-cuda) for the full setup.
 
 ### First transcription is slow
 
